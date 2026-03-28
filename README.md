@@ -1,4 +1,4 @@
-# Mi Plataforma — Frontend
+# mojarras—frontend
 
 
 ## Tecnología
