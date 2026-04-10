@@ -27,4 +27,7 @@ Frontend simple para registro e inicio de sesion de usuarios.
 
 1. Entrar a Registro y crear cuenta.
 2. Ir a Login e iniciar sesion con ese usuario.
-3. Si el login es correcto, te manda a Perfil.
+3. Si el login es correcto, te manda a Home.
+4. Ir a Mi Perfil te manda a consultar tu informaciòn personal.
+5. Ir a Editar Perfil te manda a cambiar datos que fueron escritos en el registro
+6. Ir a Cerrar Sesiòn, te manda a Login.
