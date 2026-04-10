@@ -1,30 +1,36 @@
-import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
+import { BrowserRouter, Navigate, Route, Routes, Link } from "react-router-dom";
+import "./App.css";
+import Login from "./pages/Login";
+import Profile from "./pages/Profile";
+import Register from "./pages/Register";
+import UpdateProfile from "./pages/UpdateProfile";
 
-import Profile from './pages/Profile';
-import UpdateProfile from './pages/UpdateProfile';
-import Login from './pages/Login'
-
-const RutaProtegida = ({ children }) => {
-    const token = sessionStorage.getItem('token');
-    if (!token) return <Navigate to="/login" />;
-    return children;
-};
+function Home() {
+  return (
+    <div className="container">
+      <h1>Mojarras Frontend</h1>
+      <p>Selecciona una opcion:</p>
+      <div className="actions">
+        <Link to="/register">Registro</Link>
+        <Link to="/login">Login</Link>
+      </div>
+    </div>
+  );
+}
 
 function App() {
-    return (
-        <BrowserRouter>
-            <Routes>
-                <Route path="/login" element={<Login />} />
-
-                {/* Rutas que exigen token */}
-                <Route path="/profile" element={<RutaProtegida><Profile /></RutaProtegida>} />
-                <Route path="/update-profile" element={<RutaProtegida><UpdateProfile /></RutaProtegida>} />
-
-                {/* Redirección por defecto */}
-                <Route path="*" element={<Navigate to="/login" />} />
-            </Routes>
-        </BrowserRouter>
-    );
+  return (
+    <BrowserRouter>
+      <Routes>
+        <Route path="/" element={<Home />} />
+        <Route path="/register" element={<Register />} />
+        <Route path="/login" element={<Login />} />
+        <Route path="/profile" element={<Profile />} />
+        <Route path="/update-profile" element={<UpdateProfile />} />
+        <Route path="*" element={<Navigate to="/" replace />} />
+      </Routes>
+    </BrowserRouter>
+  );
 }
 
 export default App;

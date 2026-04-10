@@ -1,0 +1,53 @@
+.container {
+  max-width: 430px;
+  margin: 40px auto;
+  padding: 20px;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  font-family: Arial, sans-serif;
+}
+
+.container h1,
+.container h2 {
+  margin-top: 0;
+}
+
+.container form {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.container input {
+  padding: 8px;
+  border: 1px solid #bbb;
+  border-radius: 4px;
+}
+
+.container button {
+  padding: 10px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  background: #2a7a3b;
+  color: #fff;
+}
+
+.actions {
+  display: flex;
+  gap: 12px;
+}
+
+.actions a,
+.secondary-link {
+  color: #1a58b5;
+  text-decoration: none;
+}
+
+.error {
+  color: #b20000;
+}
+
+.success {
+  color: #0c7b27;
+}
