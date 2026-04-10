@@ -19,7 +19,7 @@ const Login = () => {
       const response = await api.login(credentials);
 
       sessionStorage.setItem("token", response.token);
-      navigate("/profile");
+      navigate("/home");
     } catch (err) {
       setError(err.message);
     }
