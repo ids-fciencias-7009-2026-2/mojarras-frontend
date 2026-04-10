@@ -34,69 +34,82 @@ const Register = () => {
   };
 
   return (
-    <div className="container">
-      <h2>Registro</h2>
-      {error && <p className="error">{error}</p>}
-      {success && <p className="success">{success}</p>}
+    <div className="page page--auth">
+      <div className="container auth-card auth-card--wide">
+        <h2>Registro</h2>
+        <p className="auth-subtitle">
+          Crea tu cuenta para empezar a gestionar tu perfil.
+        </p>
+        {error && <p className="error">{error}</p>}
+        {success && <p className="success">{success}</p>}
 
-      <form onSubmit={handleSubmit}>
-        <input
-          type="text"
-          name="username"
-          placeholder="Usuario"
-          value={formData.username}
-          onChange={handleChange}
-          required
-        />
-        <input
-          type="text"
-          name="firstName"
-          placeholder="Nombre"
-          value={formData.firstName}
-          onChange={handleChange}
-          required
-        />
-        <input
-          type="text"
-          name="lastName"
-          placeholder="Apellido"
-          value={formData.lastName}
-          onChange={handleChange}
-          required
-        />
-        <input
-          type="email"
-          name="email"
-          placeholder="Email"
-          value={formData.email}
-          onChange={handleChange}
-          required
-        />
-        <input
-          type="text"
-          name="zipCode"
-          placeholder="Codigo postal"
-          value={formData.zipCode}
-          onChange={handleChange}
-          required
-        />
-        <input
-          type="password"
-          name="password"
-          placeholder="Contrasena"
-          value={formData.password}
-          onChange={handleChange}
-          required
-        />
-        <button type="submit">Crear cuenta</button>
-      </form>
+        <form onSubmit={handleSubmit} className="stack-form">
+          <input
+            className="ui-input"
+            type="text"
+            name="username"
+            placeholder="Usuario"
+            value={formData.username}
+            onChange={handleChange}
+            required
+          />
+          <input
+            className="ui-input"
+            type="text"
+            name="firstName"
+            placeholder="Nombre"
+            value={formData.firstName}
+            onChange={handleChange}
+            required
+          />
+          <input
+            className="ui-input"
+            type="text"
+            name="lastName"
+            placeholder="Apellido"
+            value={formData.lastName}
+            onChange={handleChange}
+            required
+          />
+          <input
+            className="ui-input"
+            type="email"
+            name="email"
+            placeholder="Email"
+            value={formData.email}
+            onChange={handleChange}
+            required
+          />
+          <input
+            className="ui-input"
+            type="text"
+            name="zipCode"
+            placeholder="Codigo postal"
+            value={formData.zipCode}
+            onChange={handleChange}
+            required
+          />
+          <input
+            className="ui-input"
+            type="password"
+            name="password"
+            placeholder="Contraseña"
+            value={formData.password}
+            onChange={handleChange}
+            required
+          />
+          <button className="ui-btn ui-btn--primary" type="submit">
+            Crear cuenta
+          </button>
+        </form>
 
-      <p>
-        Ya tienes cuenta?{" "}
-        <Link className="secondary-link" to="/login">
-          Ir a login
-        </Link>
-      </p>
+        <p className="auth-switch">
+          Ya tienes cuenta?{" "}
+          <Link className="secondary-link" to="/login">
+            Ir a login
+          </Link>
+        </p>
+      </div>
     </div>
   );
 };

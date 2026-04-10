@@ -20,16 +20,42 @@ function App() {
         <Route path="/register" element={<Register />} />
 
         {/* Protegidas */}
-        <Route path="/home" element={<PrivateRoute><Home /></PrivateRoute>} />
-        <Route path="/profile" element={<PrivateRoute><Profile /></PrivateRoute>} />
-        <Route path="/update-profile" element={<PrivateRoute><UpdateProfile /></PrivateRoute>} />
+        <Route
+          path="/home"
+          element={
+            <PrivateRoute>
+              <Home />
+            </PrivateRoute>
+          }
+        />
+        <Route
+          path="/profile"
+          element={
+            <PrivateRoute>
+              <Profile />
+            </PrivateRoute>
+          }
+        />
+        <Route
+          path="/update-profile"
+          element={
+            <PrivateRoute>
+              <UpdateProfile />
+            </PrivateRoute>
+          }
+        />
 
-        {/* Raíz: si hay sesión → Home, si no → Login */}
-        <Route path="/" element={
-          sessionStorage.getItem("token")
-            ? <Navigate to="/home" replace />
-            : <Navigate to="/login" replace />
-        } />
+        {/* Raíz: si hay sesión Home, si no Login */}
+        <Route
+          path="/"
+          element={
+            sessionStorage.getItem("token") ? (
+              <Navigate to="/home" replace />
+            ) : (
+              <Navigate to="/login" replace />
+            )
+          }
+        />
 
         <Route path="*" element={<Navigate to="/" replace />} />
       </Routes>
