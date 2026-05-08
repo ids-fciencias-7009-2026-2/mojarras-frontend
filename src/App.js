@@ -5,6 +5,10 @@ import Profile from "./pages/Profile";
 import Register from "./pages/Register";
 import UpdateProfile from "./pages/UpdateProfile";
 import Home from "./pages/Home";
+import Publications from "./pages/Publications";
+import CreatePublication from "./pages/CreatePublication";
+import PublicationDetail from "./pages/PublicationDetail";
+import PublicationComplete from "./pages/PublicationComplete";
 
 function PrivateRoute({ children }) {
   const token = sessionStorage.getItem("token");
@@ -41,6 +45,38 @@ function App() {
           element={
             <PrivateRoute>
               <UpdateProfile />
+            </PrivateRoute>
+          }
+        />
+        <Route
+          path="/publications"
+          element={
+            <PrivateRoute>
+              <Publications />
+            </PrivateRoute>
+          }
+        />
+        <Route
+          path="/publications/new"
+          element={
+            <PrivateRoute>
+              <CreatePublication />
+            </PrivateRoute>
+          }
+        />
+        <Route
+          path="/publications/:id"
+          element={
+            <PrivateRoute>
+              <PublicationDetail />
+            </PrivateRoute>
+          }
+        />
+        <Route
+          path="/publications/:id/complete"
+          element={
+            <PrivateRoute>
+              <PublicationComplete />
             </PrivateRoute>
           }
         />

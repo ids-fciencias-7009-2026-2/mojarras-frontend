@@ -1,27 +1,33 @@
-import React, { useEffect, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
-import { api } from '../services/api';
+import React, { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
+import { api } from "../services/api";
 
 const Home = () => {
   const [user, setUser] = useState(null);
+  const [previewPublications, setPreviewPublications] = useState([]);
   const [error, setError] = useState(null);
   const navigate = useNavigate();
 
   useEffect(() => {
-    const token = sessionStorage.getItem('token');
+    const token = sessionStorage.getItem("token");
     if (!token) {
-      navigate('/login');
+      navigate("/login");
       return;
     }
 
     const loadUser = async () => {
       try {
-        const data = await api.getProfile(token);
-        setUser(data);
+        const [profile, publications] = await Promise.all([
+          api.getProfile(token),
+          api.listPublications(token, { page: 0, size: 3, sort: "id,desc" }),
+        ]);
+
+        setUser(profile);
+        setPreviewPublications(publications.content || []);
       } catch (err) {
-        setError('Sesión inválida. Por favor inicia sesión nuevamente.');
-        sessionStorage.removeItem('token');
-        setTimeout(() => navigate('/login'), 2000);
+        setError("Sesión inválida. Por favor inicia sesión nuevamente.");
+        sessionStorage.removeItem("token");
+        setTimeout(() => navigate("/login"), 2000);
       }
     };
 
@@ -29,12 +35,18 @@ const Home = () => {
   }, [navigate]);
 
   const handleLogout = () => {
-    sessionStorage.removeItem('token');
-    navigate('/login');
+    sessionStorage.removeItem("token");
+    navigate("/login");
   };
 
   if (error) return <div className="home-error">{error}</div>;
-  if (!user) return <div className="home-loading"><span className="spinner" />Cargando...</div>;
+  if (!user)
+    return (
+      <div className="home-loading">
+        <span className="spinner" />
+        Cargando...
+      </div>
+    );
 
   return (
     <div className="home-wrapper">
@@ -47,7 +59,13 @@ const Home = () => {
         <div className="home-nav__actions">
           <button
             className="home-nav__btn home-nav__btn--profile"
-            onClick={() => navigate('/profile')}
+            onClick={() => navigate("/publications")}
+          >
+            Adopciones
+          </button>
+          <button
+            className="home-nav__btn home-nav__btn--profile"
+            onClick={() => navigate("/profile")}
           >
             Mi Perfil
           </button>
@@ -63,18 +81,62 @@ const Home = () => {
       {/* Hero */}
       <section className="home-hero">
         <div className="home-hero__content">
+          <span className="home-hero__eyebrow">Panel de adopciones</span>
           <p className="home-hero__greeting">¡Bienvenido de vuelta,</p>
-          <h1 className="home-hero__name">{user.firstName} {user.lastName}!</h1>
-          <p className="home-hero__sub">@{user.username} · {user.email}</p>
+          <h1 className="home-hero__name">
+            {user.firstName} {user.lastName}!
+          </h1>
+          <p className="home-hero__sub">
+            @{user.username} · {user.email}
+          </p>
+          <div className="home-hero__actions">
+            <button
+              className="ui-btn ui-btn--primary home-hero__cta"
+              onClick={() => navigate("/publications")}
+            >
+              Ver publicaciones
+            </button>
+            <button
+              className="ui-btn ui-btn--ghost home-hero__cta"
+              onClick={() => navigate("/publications/new")}
+            >
+              Crear publicación
+            </button>
+          </div>
         </div>
         <div className="home-hero__badge">
-          {user.firstName?.charAt(0).toUpperCase()}{user.lastName?.charAt(0).toUpperCase()}
+          {user.firstName?.charAt(0).toUpperCase()}
+          {user.lastName?.charAt(0).toUpperCase()}
         </div>
       </section>
 
       {/* Cards */}
       <section className="home-cards">
-        <div className="home-card" onClick={() => navigate('/profile')}>
+        <div
+          className="home-card home-card--accent"
+          onClick={() => navigate("/publications")}
+        >
+          <div className="home-card__icon">🐾</div>
+          <div className="home-card__info">
+            <h3>Adopciones</h3>
+            <p>Explora publicaciones, sube fotos y gestiona interés</p>
+          </div>
+          <span className="home-card__arrow">→</span>
+        </div>
+
+        <div
+          className="home-card"
+          onClick={() => navigate("/publications/new")}
+        >
+          <div className="home-card__icon">➕</div>
+          <div className="home-card__info">
+            <h3>Nueva Publicación</h3>
+            <p>Publica una mascota en busca de hogar</p>
+          </div>
+          <span className="home-card__arrow">→</span>
+        </div>
+
+        <div className="home-card" onClick={() => navigate("/profile")}>
           <div className="home-card__icon">👤</div>
           <div className="home-card__info">
             <h3>Mi Perfil</h3>
@@ -83,7 +145,7 @@ const Home = () => {
           <span className="home-card__arrow">→</span>
         </div>
 
-        <div className="home-card" onClick={() => navigate('/update-profile')}>
+        <div className="home-card" onClick={() => navigate("/update-profile")}>
           <div className="home-card__icon">✏️</div>
           <div className="home-card__info">
             <h3>Editar Perfil</h3>
@@ -102,9 +164,46 @@ const Home = () => {
         </div>
       </section>
 
+      <section className="home-preview">
+        <div className="home-preview__header">
+          <h3>Publicaciones recientes</h3>
+          <button
+            className="home-preview__link"
+            onClick={() => navigate("/publications")}
+          >
+            Ver todas
+          </button>
+        </div>
+
+        {previewPublications.length === 0 ? (
+          <p className="home-preview__empty">
+            Aún no hay publicaciones recientes.
+          </p>
+        ) : (
+          <div className="home-preview__grid">
+            {previewPublications.map((publication) => (
+              <button
+                key={publication.id}
+                className="home-preview__item"
+                onClick={() => navigate(`/publications/${publication.id}`)}
+              >
+                <span className="home-preview__name">
+                  {publication.petName}
+                </span>
+                <span className="home-preview__meta">
+                  {publication.type} · {publication.zipCode}
+                </span>
+              </button>
+            ))}
+          </div>
+        )}
+      </section>
+
       {/* Footer info */}
       <footer className="home-footer">
-        <p>Código Postal: <strong>{user.zipCode || 'No registrado'}</strong></p>
+        <p>
+          Código Postal: <strong>{user.zipCode || "No registrado"}</strong>
+        </p>
       </footer>
     </div>
   );
