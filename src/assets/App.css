@@ -2,14 +2,16 @@
 
 :root {
   --bg-base: #f2f5f9;
-  --bg-accent: #e8f5f2;
+  --bg-accent: #fdf5eb;
   --surface: #ffffff;
   --surface-soft: #f9fbfd;
   --text-main: #1f2937;
   --text-muted: #5f6f82;
-  --primary: #1f8a70;
-  --primary-dark: #176a56;
-  --primary-soft: #d7efe9;
+  
+  --primary: #f59d30; 
+  --primary-dark: #e08922;
+  --primary-soft: #fcecd9;
+  
   --danger: #bb1f3d;
   --danger-soft: #fde7ee;
   --border: #d8e2ec;
@@ -1158,5 +1160,51 @@
 
   .profile-grid {
     grid-template-columns: 1fr;
+  }
+}
+
+.detail-layout {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 36px;
+  align-items: start;
+}
+
+.carousel-container {
+  display: flex;
+  gap: 12px;
+  overflow-x: auto;
+  scroll-snap-type: x mandatory;
+  border-radius: 16px;
+  border: 1px solid #d9e7f3;
+  padding: 12px;
+  background-color: #f7fcfa;
+}
+
+.carousel-img {
+  height: 400px;
+  width: 100%;
+  object-fit: cover;
+  scroll-snap-align: start;
+  border-radius: 12px;
+  flex-shrink: 0;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.05);
+}
+
+.carousel-empty {
+  height: 400px;
+  width: 100%;
+  display: grid;
+  place-items: center;
+  font-size: 6rem;
+  background-color: #e4ecf4;
+  border-radius: 12px;
+  flex-shrink: 0;
+}
+
+@media (max-width: 820px) {
+  .detail-layout {
+    grid-template-columns: 1fr;
+    gap: 24px;
   }
 }

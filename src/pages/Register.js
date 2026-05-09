@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { api } from "../services/api";
+import { userService } from "../services/UserService";
 
 const Register = () => {
   const navigate = useNavigate();
@@ -25,7 +25,7 @@ const Register = () => {
     setSuccess("");
 
     try {
-      await api.register(formData);
+      await userService.register(formData);
       setSuccess("Cuenta creada. Ahora inicia sesion.");
       setTimeout(() => navigate("/login"), 1000);
     } catch (err) {
