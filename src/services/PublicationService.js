@@ -58,8 +58,7 @@ export const publicationService = {
     return;
   },
 
-  // Photos (multipart)
-  uploadPhotos: async (token, publicationId, files) => {
+ uploadPhotos: async (token, publicationId, files) => {
     const form = new FormData();
     files.forEach((f) => form.append("files", f));
     const response = await fetch(
@@ -70,7 +69,12 @@ export const publicationService = {
         body: form,
       },
     );
-    if (!response.ok) throw new Error("Error subiendo fotos");
+    
+    if (!response.ok) {
+      const errorData = await response.json().catch(() => ({}));
+      throw new Error(errorData.message || "Error subiendo fotos");
+    }
+    
     return response.json();
   },
 
