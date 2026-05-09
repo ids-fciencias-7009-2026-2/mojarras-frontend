@@ -1,42 +1,72 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { api } from "../services/api";
+import { userService } from "../services/UserService";
+import { publicationService } from "../services/PublicationService";
+
+const emptyFilters = { type: "", zipCode: "", breed: "" };
 
 const Home = () => {
   const [user, setUser] = useState(null);
-  const [previewPublications, setPreviewPublications] = useState([]);
+  const [page, setPage] = useState(null);
+  const [filters, setFilters] = useState(emptyFilters);
+  const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const navigate = useNavigate();
 
-  useEffect(() => {
+  const loadData = async (queryFilters = filters) => {
     const token = sessionStorage.getItem("token");
     if (!token) {
       navigate("/login");
       return;
     }
 
-    const loadUser = async () => {
-      try {
-        const [profile, publications] = await Promise.all([
-          api.getProfile(token),
-          api.listPublications(token, { page: 0, size: 3, sort: "id,desc" }),
-        ]);
+    setLoading(true);
+    setError(null);
 
+    try {
+      if (!user) {
+        const profile = await userService.getProfile(token);
         setUser(profile);
-        setPreviewPublications(publications.content || []);
-      } catch (err) {
-        setError("Sesión inválida. Por favor inicia sesión nuevamente.");
+      }
+
+      const params = { page: 0, size: 20, sort: "id,desc" };
+      if (queryFilters.type) params.type = queryFilters.type;
+      if (queryFilters.zipCode) params.zipCode = queryFilters.zipCode;
+      if (queryFilters.breed) params.breed = queryFilters.breed;
+
+      const data = await publicationService.listPublications(token, params);
+      setPage(data);
+    } catch (err) {
+      setError("Error al cargar los datos. Por favor, intenta de nuevo.");
+      if (err.message.includes("Sesión")) {
         sessionStorage.removeItem("token");
         setTimeout(() => navigate("/login"), 2000);
       }
-    };
+    } finally {
+      setLoading(false);
+    }
+  };
 
-    loadUser();
+  useEffect(() => {
+    loadData();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [navigate]);
 
-  const handleLogout = () => {
-    sessionStorage.removeItem("token");
-    navigate("/login");
+  const onFilterChange = (event) => {
+    setFilters((current) => ({
+      ...current,
+      [event.target.name]: event.target.value,
+    }));
+  };
+
+  const onSubmitFilters = (event) => {
+    event.preventDefault();
+    loadData(filters);
+  };
+
+  const clearFilters = () => {
+    setFilters(emptyFilters);
+    loadData(emptyFilters);
   };
 
   if (error) return <div className="home-error">{error}</div>;
@@ -44,167 +74,129 @@ const Home = () => {
     return (
       <div className="home-loading">
         <span className="spinner" />
-        Cargando...
+        Cargando panel...
       </div>
     );
 
-  return (
-    <div className="home-wrapper">
-      {/* Navbar */}
-      <nav className="home-nav">
-        <div className="home-nav__brand">
-          <span className="home-nav__fish">🐟</span>
-          <span className="home-nav__title">Mojarras</span>
-        </div>
-        <div className="home-nav__actions">
-          <button
-            className="home-nav__btn home-nav__btn--profile"
-            onClick={() => navigate("/publications")}
-          >
-            Adopciones
-          </button>
-          <button
-            className="home-nav__btn home-nav__btn--profile"
-            onClick={() => navigate("/profile")}
-          >
-            Mi Perfil
-          </button>
-          <button
-            className="home-nav__btn home-nav__btn--logout"
-            onClick={handleLogout}
-          >
-            Cerrar sesión
-          </button>
-        </div>
-      </nav>
+  const publications = page?.content || [];
 
-      {/* Hero */}
-      <section className="home-hero">
-        <div className="home-hero__content">
-          <span className="home-hero__eyebrow">Panel de adopciones</span>
-          <p className="home-hero__greeting">¡Bienvenido de vuelta,</p>
-          <h1 className="home-hero__name">
-            {user.firstName} {user.lastName}!
-          </h1>
-          <p className="home-hero__sub">
-            @{user.username} · {user.email}
-          </p>
-          <div className="home-hero__actions">
+  return (
+    <div className="page page--list">
+      <div className="container publications-shell">
+        
+        {/* Encabezado del Home */}
+        <div className="publications-header">
+          <div>
+            <h2>¡Hola, {user.firstName}!</h2>
+            <p className="publications-subtitle">
+              Encuentra a tu próximo mejor amigo. Explora las mascotas en adopción.
+            </p>
+          </div>
+          <div className="publications-actions">
             <button
-              className="ui-btn ui-btn--primary home-hero__cta"
-              onClick={() => navigate("/publications")}
-            >
-              Ver publicaciones
-            </button>
-            <button
-              className="ui-btn ui-btn--ghost home-hero__cta"
+              className="ui-btn ui-btn--primary"
               onClick={() => navigate("/publications/new")}
             >
-              Crear publicación
+              + Dar en adopción
             </button>
           </div>
         </div>
-        <div className="home-hero__badge">
-          {user.firstName?.charAt(0).toUpperCase()}
-          {user.lastName?.charAt(0).toUpperCase()}
-        </div>
-      </section>
 
-      {/* Cards */}
-      <section className="home-cards">
-        <div
-          className="home-card home-card--accent"
-          onClick={() => navigate("/publications")}
-        >
-          <div className="home-card__icon">🐾</div>
-          <div className="home-card__info">
-            <h3>Adopciones</h3>
-            <p>Explora publicaciones, sube fotos y gestiona interés</p>
-          </div>
-          <span className="home-card__arrow">→</span>
-        </div>
-
-        <div
-          className="home-card"
-          onClick={() => navigate("/publications/new")}
-        >
-          <div className="home-card__icon">➕</div>
-          <div className="home-card__info">
-            <h3>Nueva Publicación</h3>
-            <p>Publica una mascota en busca de hogar</p>
-          </div>
-          <span className="home-card__arrow">→</span>
-        </div>
-
-        <div className="home-card" onClick={() => navigate("/profile")}>
-          <div className="home-card__icon">👤</div>
-          <div className="home-card__info">
-            <h3>Mi Perfil</h3>
-            <p>Consulta tu información personal</p>
-          </div>
-          <span className="home-card__arrow">→</span>
-        </div>
-
-        <div className="home-card" onClick={() => navigate("/update-profile")}>
-          <div className="home-card__icon">✏️</div>
-          <div className="home-card__info">
-            <h3>Editar Perfil</h3>
-            <p>Actualiza tus datos personales</p>
-          </div>
-          <span className="home-card__arrow">→</span>
-        </div>
-
-        <div className="home-card home-card--logout" onClick={handleLogout}>
-          <div className="home-card__icon">🚪</div>
-          <div className="home-card__info">
-            <h3>Cerrar Sesión</h3>
-            <p>Salir de tu cuenta de forma segura</p>
-          </div>
-          <span className="home-card__arrow">→</span>
-        </div>
-      </section>
-
-      <section className="home-preview">
-        <div className="home-preview__header">
-          <h3>Publicaciones recientes</h3>
-          <button
-            className="home-preview__link"
-            onClick={() => navigate("/publications")}
+        {/* Barra de Filtros */}
+        <form className="publications-filters" onSubmit={onSubmitFilters}>
+          <select
+            name="type"
+            value={filters.type}
+            onChange={onFilterChange}
+            className="ui-input"
           >
-            Ver todas
+            <option value="">Tipo: Todos</option>
+            <option value="DOG">Perro</option>
+            <option value="CAT">Gato</option>
+          </select>
+          <input
+            name="breed"
+            value={filters.breed}
+            onChange={onFilterChange}
+            className="ui-input"
+            placeholder="Filtrar por raza..."
+          />
+          <input
+            name="zipCode"
+            value={filters.zipCode}
+            onChange={onFilterChange}
+            className="ui-input"
+            placeholder="Código postal..."
+          />
+          <button className="ui-btn ui-btn--primary" type="submit">
+            Filtrar
           </button>
-        </div>
+          <button
+            className="ui-btn ui-btn--ghost"
+            type="button"
+            onClick={clearFilters}
+          >
+            Limpiar
+          </button>
+        </form>
 
-        {previewPublications.length === 0 ? (
-          <p className="home-preview__empty">
-            Aún no hay publicaciones recientes.
-          </p>
-        ) : (
-          <div className="home-preview__grid">
-            {previewPublications.map((publication) => (
+        {loading && !page && (
+          <div className="home-loading" style={{ height: '200px' }}>
+            <span className="spinner" />
+            Buscando mascotas...
+          </div>
+        )}
+
+        {!loading && publications.length === 0 && (
+          <div className="publications-empty">
+            <h3>No encontramos mascotas con esos filtros</h3>
+            <p>Intenta quitando el código postal o buscando otro tipo de mascota.</p>
+          </div>
+        )}
+
+        {/* Cuadrícula de Tarjetas de Mascotas con Fotos */}
+        {publications.length > 0 && (
+          <div className="publications-grid">
+            {publications.map((pub) => (
               <button
-                key={publication.id}
-                className="home-preview__item"
-                onClick={() => navigate(`/publications/${publication.id}`)}
+                key={pub.id}
+                className="publication-card"
+                style={{ padding: 0, overflow: 'hidden', alignItems: 'flex-start', border: 'none' }}
+                onClick={() => navigate(`/publications/${pub.id}`)}
               >
-                <span className="home-preview__name">
-                  {publication.petName}
-                </span>
-                <span className="home-preview__meta">
-                  {publication.type} · {publication.zipCode}
-                </span>
+                {/* Foto */}
+                <div style={{ width: '100%', height: '200px', backgroundColor: '#e4ecf4', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                  {pub.thumbnail ? (
+                    <img 
+                      src={pub.thumbnail} 
+                      alt={pub.petName} 
+                      style={{ width: '100%', height: '100%', objectFit: 'cover' }} 
+                    />
+                  ) : (
+                    <span style={{ fontSize: '4rem' }}>{pub.type === 'DOG' ? '🐶' : '🐱'}</span>
+                  )}
+                </div>
+                
+                {/* Nombre y CP */}
+                <div style={{ padding: '16px', width: '100%', textAlign: 'left', backgroundColor: '#ffffff' }}>
+                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '8px' }}>
+                    <h3 style={{ margin: 0, fontSize: '1.25rem', color: '#1f2937' }}>{pub.petName}</h3>
+                    <span style={{ fontSize: '0.75rem', background: 'var(--primary-soft)', color: 'var(--primary-dark)', padding: '4px 10px', borderRadius: '12px', fontWeight: 'bold' }}>
+                      {pub.type === 'DOG' ? 'Perro' : 'Gato'}
+                    </span>
+                  </div>
+                  <p style={{ margin: '0 0 8px 0', color: 'var(--text-muted)', fontSize: '0.9rem', fontWeight: '500' }}>
+                    {pub.breed || "Mestizo"}
+                  </p>
+                  <span style={{ display: 'inline-flex', alignItems: 'center', gap: '4px', color: '#5f6f82', fontWeight: '600', fontSize: '0.9rem' }}>
+                    📍 C.P. {pub.zipCode}
+                  </span>
+                </div>
               </button>
             ))}
           </div>
         )}
-      </section>
-
-      {/* Footer info */}
-      <footer className="home-footer">
-        <p>
-          Código Postal: <strong>{user.zipCode || "No registrado"}</strong>
-        </p>
-      </footer>
+      </div>
     </div>
   );
 };
