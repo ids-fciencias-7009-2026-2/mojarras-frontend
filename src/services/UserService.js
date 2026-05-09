@@ -2,9 +2,32 @@ const API_ROOT = "http://localhost:8080/users";
 
 function authHeader(token) {
   if (!token) return {};
-  // ensure Bearer prefix
   const value = token.startsWith("Bearer ") ? token : `Bearer ${token}`;
   return { Authorization: value };
+}
+
+async function handleResponseError(response) {
+  let errorData;
+  try { 
+    errorData = await response.json(); 
+  } catch (e) { 
+    throw new Error(`Error del servidor o conexión (HTTP ${response.status})`); 
+  }
+
+  let finalMsg = errorData.message || "Ocurrió un error desconocido";
+  
+  if (errorData.validation_errors) {
+    const details = Object.entries(errorData.validation_errors)
+      .map(([field, msg]) => `${field}: ${msg}`)
+      .join(" | ");
+    finalMsg += ` - Validaciones: ${details}`;
+  }
+  
+  if (errorData.status && errorData.error) {
+    finalMsg = `[Error ${errorData.status} ${errorData.error}] ${finalMsg}`;
+  }
+  
+  throw new Error(finalMsg);
 }
 
 export const userService = {
@@ -14,18 +37,7 @@ export const userService = {
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(data),
     });
-    
-    if (!response.ok) {
-      const errorData = await response.json().catch(() => ({}));
-      
-      if (errorData.validation_errors) {
-        const errors = Object.values(errorData.validation_errors).join(" | ");
-        throw new Error(`Revisa tus datos: ${errors}`);
-      }
-      
-      throw new Error(errorData.message || "No se pudo registrar el usuario");
-    }
-
+    if (!response.ok) await handleResponseError(response);
     return response.json();
   },
 
@@ -35,10 +47,7 @@ export const userService = {
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(credentials),
     });
-    if (!response.ok) {
-      const errorData = await response.json().catch(() => ({}));
-      throw new Error(errorData.message || "Credenciales incorrectas");
-    }
+    if (!response.ok) await handleResponseError(response);
     return response.json();
   },
 
@@ -47,7 +56,7 @@ export const userService = {
       method: "GET",
       headers: authHeader(token),
     });
-    if (!response.ok) throw new Error("Sesión inválida o expirada");
+    if (!response.ok) await handleResponseError(response);
     return response.json();
   },
 
@@ -57,7 +66,7 @@ export const userService = {
       headers: { ...authHeader(token), "Content-Type": "application/json" },
       body: JSON.stringify(data),
     });
-    if (!response.ok) throw new Error("Error al actualizar la información");
+    if (!response.ok) await handleResponseError(response);
     return response.json();
   }
 };
