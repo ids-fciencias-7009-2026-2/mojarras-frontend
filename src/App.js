@@ -12,6 +12,7 @@ import MyPublications from "./pages/MyPublications";
 import EditPublication from "./pages/EditPublication";
 import Navbar from "./components/Navbar";
 
+
 function PrivateRoute({ children }) {
   const token = sessionStorage.getItem("token");
 
