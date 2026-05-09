@@ -9,7 +9,7 @@ function authHeader(token) {
 
 export const userService = {
   register: async (data) => {
-    const response = await fetch(`${API_ROOT}/register`, {
+    const response = await fetch(`${API_ROOT}`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(data),
