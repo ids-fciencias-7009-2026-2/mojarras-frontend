@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { api } from "../services/api";
+import { userService } from "../services/UserService";
 
 const UpdateProfile = () => {
   const [formData, setFormData] = useState({
@@ -19,7 +19,7 @@ const UpdateProfile = () => {
     const loadInitialData = async () => {
       const token = sessionStorage.getItem("token");
       try {
-        const data = await api.getProfile(token);
+        const data = await userService.getProfile(token);
         setFormData({
           username: data.username || "",
           firstName: data.firstName || "",
@@ -45,8 +45,6 @@ const UpdateProfile = () => {
     setError("");
 
     const token = sessionStorage.getItem("token");
-
-    // Preparamos el objeto a enviar (Payload)
     const payload = { ...formData };
 
     // Si la contraseña está vacía, la mandamos como null para que se ignore y no se sobrescriba.
@@ -55,9 +53,9 @@ const UpdateProfile = () => {
     }
 
     try {
-      await api.updateProfile(token, payload);
+      await userService.updateProfile(token, payload);
       setMensaje("Perfil actualizado correctamente.");
-      setTimeout(() => navigate("/profile"), 2000); // Regresa al perfil tras 2 segundos
+      setTimeout(() => navigate("/profile"), 2000);
     } catch (err) {
       setError(err.message);
     }
