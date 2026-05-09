@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
-import { api } from "../services/api";
+import { publicationService } from "../services/PublicationService";
 
 const PublicationComplete = () => {
   const { id } = useParams();
@@ -26,7 +26,7 @@ const PublicationComplete = () => {
     try {
       setLoading(true);
       const token = sessionStorage.getItem("token");
-      await api.uploadPhotos(token, id, files);
+      await publicationService.uploadPhotos(token, id, files);
       setSuccess("Publicación activada correctamente.");
       navigate(`/publications/${id}`);
     } catch (e) {
@@ -51,7 +51,7 @@ const PublicationComplete = () => {
           <button
             className="ui-btn ui-btn--ghost"
             type="button"
-            onClick={() => navigate("/publications")}
+            onClick={() => navigate("/home")}
           >
             Ir al listado
           </button>
