@@ -1,18 +1,29 @@
 import { BrowserRouter, Navigate, Route, Routes } from "react-router-dom";
-import "./App.css";
+import "../src/assets/App.css";
 import Login from "./pages/Login";
 import Profile from "./pages/Profile";
 import Register from "./pages/Register";
 import UpdateProfile from "./pages/UpdateProfile";
 import Home from "./pages/Home";
-import Publications from "./pages/Publications";
 import CreatePublication from "./pages/CreatePublication";
 import PublicationDetail from "./pages/PublicationDetail";
 import PublicationComplete from "./pages/PublicationComplete";
+import MyPublications from "./pages/MyPublications";
+import EditPublication from "./pages/EditPublication";
+import Navbar from "./components/Navbar";
 
 function PrivateRoute({ children }) {
   const token = sessionStorage.getItem("token");
-  return token ? children : <Navigate to="/login" replace />;
+
+  if (!token) {
+    return <Navigate to="/login" replace />;
+  }
+  return (
+    <>
+      <Navbar />
+      {children}
+    </>
+  );
 }
 
 function App() {
@@ -49,14 +60,6 @@ function App() {
           }
         />
         <Route
-          path="/publications"
-          element={
-            <PrivateRoute>
-              <Publications />
-            </PrivateRoute>
-          }
-        />
-        <Route
           path="/publications/new"
           element={
             <PrivateRoute>
@@ -77,6 +80,22 @@ function App() {
           element={
             <PrivateRoute>
               <PublicationComplete />
+            </PrivateRoute>
+          }
+        />
+        <Route
+          path="/my-publications"
+          element={
+            <PrivateRoute>
+              <MyPublications />
+            </PrivateRoute>
+          }
+        />
+        <Route
+          path="/publications/:id/edit"
+          element={
+            <PrivateRoute>
+              <EditPublication />
             </PrivateRoute>
           }
         />

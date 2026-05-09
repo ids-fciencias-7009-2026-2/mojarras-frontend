@@ -1,0 +1,109 @@
+.new-theme-nav {
+  background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+  padding: 12px 24px;
+  box-shadow: 0 4px 16px rgba(245, 157, 48, 0.3); 
+  border: none;
+  position: relative;
+  z-index: 1000;
+}
+
+.home-nav__right {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+}
+
+.home-nav__greeting {
+  color: #ffffff; 
+  font-style:bold;
+  font-size: 0.5cm;
+  font-weight: 500;
+  display: none; 
+}
+
+@media (min-width: 680px) {
+  .home-nav__greeting {
+    display: inline-block;
+  }
+}
+
+.home-nav__greeting strong {
+  color: #ffffff; 
+  font-style:bold; 
+}
+
+.nav-dropdown-container {
+  position: relative;
+  display: inline-block;
+  padding-bottom: 15px; 
+  margin-bottom: -15px;
+}
+
+.nav-avatar-btn {
+  background: #ffffff; 
+  color: var(--primary-dark);
+  border: 2px solid transparent;
+  border-radius: 50%;
+  width: 42px;
+  height: 42px;
+  font-size: 1rem;
+  font-weight: 800;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s ease;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.15);
+}
+
+.nav-dropdown-container:hover .nav-avatar-btn {
+  transform: scale(1.05);
+  background: #fdf5eb;
+}
+
+.nav-dropdown-menu {
+  position: absolute;
+  top: 100%;
+  right: 0;
+  background: #ffffff;
+  border-radius: 12px;
+  box-shadow: 0 8px 24px rgba(0,0,0,0.18);
+  min-width: 200px;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  z-index: 1000;
+  border: 1px solid var(--border);
+  animation: card-enter 0.2s ease-out;
+}
+
+.nav-dropdown-menu button {
+  background: transparent;
+  border: none;
+  padding: 14px 18px;
+  text-align: left;
+  cursor: pointer;
+  font-family: inherit;
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: var(--text-main);
+  transition: background 0.2s;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.nav-dropdown-menu button:hover {
+  background: var(--surface-soft);
+  color: var(--primary-dark);
+}
+
+.nav-dropdown-menu button.logout-text {
+  color: var(--danger);
+  border-top: 1px solid #f1f5f9;
+}
+
+.nav-dropdown-menu button.logout-text:hover {
+  background: var(--danger-soft);
+  color: #8f0f2c;
+}
