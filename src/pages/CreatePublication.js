@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { api } from "../services/api";
+import { publicationService } from "../services/PublicationService";
 
 const CreatePublication = () => {
   const [form, setForm] = useState({
@@ -24,7 +24,7 @@ const CreatePublication = () => {
 
     try {
       const token = sessionStorage.getItem("token");
-      const created = await api.createPublication(token, form);
+      const created = await publicationService.createPublication(token, form);
       navigate(`/publications/${created.id}/complete`);
     } catch (e) {
       setError(e.message);
@@ -47,7 +47,7 @@ const CreatePublication = () => {
           <button
             className="ui-btn ui-btn--ghost"
             type="button"
-            onClick={() => navigate("/publications")}
+            onClick={() => navigate("/home")}
           >
             Volver
           </button>
