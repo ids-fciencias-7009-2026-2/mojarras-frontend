@@ -1,5 +1,5 @@
 import { BrowserRouter, Navigate, Route, Routes } from "react-router-dom";
-import "../src/assets/App.css";
+import "./assets/App.css";
 import Login from "./pages/Login";
 import Profile from "./pages/Profile";
 import Register from "./pages/Register";
@@ -11,7 +11,6 @@ import PublicationComplete from "./pages/PublicationComplete";
 import MyPublications from "./pages/MyPublications";
 import EditPublication from "./pages/EditPublication";
 import Navbar from "./components/Navbar";
-
 
 function PrivateRoute({ children }) {
   const token = sessionStorage.getItem("token");

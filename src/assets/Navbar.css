@@ -1,96 +1,131 @@
-.new-theme-nav {
-  background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
-  padding: 12px 24px;
-  box-shadow: 0 4px 16px rgba(245, 157, 48, 0.3); 
-  border: none;
-  position: relative;
+.home-nav {
+  position: sticky;
+  top: 0;
   z-index: 1000;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 14px 24px;
+  background: rgba(15, 23, 42, 0.84);
+  backdrop-filter: blur(14px);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+  box-shadow: 0 12px 28px rgba(2, 6, 23, 0.18);
+}
+
+.home-nav__brand {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  border: 0;
+  background: transparent;
+  color: #f8fbff;
+  cursor: pointer;
+  padding: 0;
+  font:
+    700 1.15rem/1 "Space Grotesk",
+    "Segoe UI",
+    sans-serif;
+  letter-spacing: 0.01em;
+}
+
+.home-nav__brand:hover {
+  opacity: 0.96;
+}
+
+.home-nav__brand:focus-visible,
+.nav-avatar-btn:focus-visible,
+.nav-dropdown-menu button:focus-visible {
+  outline: 3px solid rgba(245, 158, 11, 0.45);
+  outline-offset: 3px;
+}
+
+.home-nav__fish {
+  font-size: 1.4rem;
+}
+
+.home-nav__title {
+  color: inherit;
 }
 
 .home-nav__right {
   display: flex;
   align-items: center;
-  gap: 20px;
+  gap: 14px;
 }
 
 .home-nav__greeting {
-  color: #ffffff; 
-  font-style:bold;
-  font-size: 0.5cm;
-  font-weight: 500;
-  display: none; 
-}
-
-@media (min-width: 680px) {
-  .home-nav__greeting {
-    display: inline-block;
-  }
+  display: none;
+  color: rgba(248, 251, 255, 0.88);
+  font:
+    500 0.95rem/1.35 "Source Sans 3",
+    "Segoe UI",
+    sans-serif;
 }
 
 .home-nav__greeting strong {
-  color: #ffffff; 
-  font-style:bold; 
+  color: #ffffff;
+  font-weight: 700;
 }
 
 .nav-dropdown-container {
   position: relative;
-  display: inline-block;
-  padding-bottom: 15px; 
-  margin-bottom: -15px;
+  display: inline-flex;
 }
 
 .nav-avatar-btn {
-  background: #ffffff; 
-  color: var(--primary-dark);
-  border: 2px solid transparent;
+  width: 44px;
+  height: 44px;
   border-radius: 50%;
-  width: 42px;
-  height: 42px;
-  font-size: 1rem;
-  font-weight: 800;
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  background: linear-gradient(135deg, #f8fbff 0%, #d7efe9 100%);
+  color: var(--primary-dark);
+  display: grid;
+  place-items: center;
   cursor: pointer;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  transition: all 0.2s ease;
-  box-shadow: 0 4px 10px rgba(0,0,0,0.15);
+  box-shadow: 0 10px 18px rgba(2, 6, 23, 0.18);
+  transition:
+    transform 0.18s ease,
+    box-shadow 0.18s ease,
+    filter 0.18s ease;
 }
 
-.nav-dropdown-container:hover .nav-avatar-btn {
-  transform: scale(1.05);
-  background: #fdf5eb;
+.nav-avatar-btn:hover {
+  transform: translateY(-1px);
+  filter: brightness(1.01);
 }
 
 .nav-dropdown-menu {
   position: absolute;
-  top: 100%;
+  top: calc(100% + 10px);
   right: 0;
-  background: #ffffff;
-  border-radius: 12px;
-  box-shadow: 0 8px 24px rgba(0,0,0,0.18);
-  min-width: 200px;
-  display: flex;
-  flex-direction: column;
+  min-width: 220px;
   overflow: hidden;
-  z-index: 1000;
-  border: 1px solid var(--border);
-  animation: card-enter 0.2s ease-out;
+  border-radius: 16px;
+  border: 1px solid rgba(148, 163, 184, 0.18);
+  background: rgba(255, 255, 255, 0.98);
+  box-shadow: 0 24px 42px rgba(2, 6, 23, 0.2);
+  animation: menu-enter 160ms ease-out;
 }
 
 .nav-dropdown-menu button {
+  width: 100%;
+  border: 0;
   background: transparent;
-  border: none;
-  padding: 14px 18px;
+  padding: 14px 16px;
   text-align: left;
   cursor: pointer;
-  font-family: inherit;
-  font-size: 0.95rem;
-  font-weight: 600;
   color: var(--text-main);
-  transition: background 0.2s;
+  font:
+    600 0.95rem/1.2 "Source Sans 3",
+    "Segoe UI",
+    sans-serif;
   display: flex;
   align-items: center;
   gap: 10px;
+  transition:
+    background-color 0.18s ease,
+    color 0.18s ease;
 }
 
 .nav-dropdown-menu button:hover {
@@ -100,10 +135,28 @@
 
 .nav-dropdown-menu button.logout-text {
   color: var(--danger);
-  border-top: 1px solid #f1f5f9;
+  border-top: 1px solid rgba(148, 163, 184, 0.16);
 }
 
 .nav-dropdown-menu button.logout-text:hover {
-  background: var(--danger-soft);
-  color: #8f0f2c;
+  background: rgba(194, 65, 74, 0.08);
+  color: #9f1d2f;
+}
+
+@media (min-width: 720px) {
+  .home-nav__greeting {
+    display: inline-block;
+  }
+}
+
+@keyframes menu-enter {
+  from {
+    opacity: 0;
+    transform: translateY(-6px) scale(0.98);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
 }

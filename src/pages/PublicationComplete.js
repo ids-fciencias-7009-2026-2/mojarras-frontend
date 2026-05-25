@@ -67,7 +67,12 @@ const PublicationComplete = () => {
             y dejarla disponible para consulta.
           </p>
           <div className="upload-row upload-row--stacked">
-            <input type="file" multiple onChange={handleFiles} />
+            <input
+              className="upload-input"
+              type="file"
+              multiple
+              onChange={handleFiles}
+            />
             <button
               className="ui-btn ui-btn--primary"
               type="button"
