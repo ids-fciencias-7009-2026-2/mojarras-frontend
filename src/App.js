@@ -10,6 +10,7 @@ import PublicationDetail from "./pages/PublicationDetail";
 import PublicationComplete from "./pages/PublicationComplete";
 import MyPublications from "./pages/MyPublications";
 import EditPublication from "./pages/EditPublication";
+import VerifyAccount from "./pages/VerifyAccount";
 import Navbar from "./components/Navbar";
 
 function PrivateRoute({ children }) {
@@ -33,6 +34,7 @@ function App() {
         {/* Públicas */}
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register />} />
+        <Route path="/verify" element={<VerifyAccount />} />
 
         {/* Protegidas */}
         <Route
