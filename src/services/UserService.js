@@ -73,7 +73,7 @@ export const userService = {
   verifyAccount: async (verificationToken) => {
     const response = await fetch(
       `${API_ROOT}/verify?token=${encodeURIComponent(verificationToken)}`,
-      { method: "GET" },
+      { method: "POST" },
     );
     if (!response.ok) await handleResponseError(response);
     try {
