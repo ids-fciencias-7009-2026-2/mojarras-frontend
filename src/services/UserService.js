@@ -68,5 +68,18 @@ export const userService = {
     });
     if (!response.ok) await handleResponseError(response);
     return response.json();
-  }
+  },
+
+  verifyAccount: async (verificationToken) => {
+    const response = await fetch(
+      `${API_ROOT}/verify?token=${encodeURIComponent(verificationToken)}`,
+      { method: "GET" },
+    );
+    if (!response.ok) await handleResponseError(response);
+    try {
+      return await response.json();
+    } catch (e) {
+      return {};
+    }
+  },
 };
