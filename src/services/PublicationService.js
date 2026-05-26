@@ -8,25 +8,25 @@ function authHeader(token) {
 
 async function handleResponseError(response) {
   let errorData;
-  try { 
-    errorData = await response.json(); 
-  } catch (e) { 
-    throw new Error(`Error del servidor o conexión (HTTP ${response.status})`); 
+  try {
+    errorData = await response.json();
+  } catch (e) {
+    throw new Error(`Error del servidor o conexión (HTTP ${response.status})`);
   }
 
   let finalMsg = errorData.message || "Ocurrió un error desconocido";
-  
+
   if (errorData.validation_errors) {
     const details = Object.entries(errorData.validation_errors)
       .map(([field, msg]) => `${field}: ${msg}`)
       .join(" | ");
     finalMsg += ` - Validaciones: ${details}`;
   }
-  
+
   if (errorData.status && errorData.error) {
     finalMsg = `[Error ${errorData.status} ${errorData.error}] ${finalMsg}`;
   }
-  
+
   throw new Error(finalMsg);
 }
 
@@ -84,20 +84,21 @@ export const publicationService = {
     const form = new FormData();
     files.forEach((f) => form.append("files", f));
     const response = await fetch(`${API_ROOT}/${publicationId}/photos`, {
-        method: "POST",
-        headers: authHeader(token),
-        body: form,
-      }
-    );
+      method: "POST",
+      headers: authHeader(token),
+      body: form,
+    });
     if (!response.ok) await handleResponseError(response);
     return response.json();
   },
 
   deletePhoto: async (token, publicationId, photoId) => {
-    const response = await fetch(`${API_ROOT}/${publicationId}/photos/${photoId}`, {
+    const response = await fetch(
+      `${API_ROOT}/${publicationId}/photos/${photoId}`,
+      {
         method: "DELETE",
         headers: authHeader(token),
-      }
+      },
     );
     if (!response.ok) await handleResponseError(response);
     return;
@@ -105,24 +106,33 @@ export const publicationService = {
 
   markInterest: async (token, publicationId) => {
     const response = await fetch(`${API_ROOT}/${publicationId}/interest`, {
-        method: "POST",
-        headers: authHeader(token),
-      }
-    );
+      method: "POST",
+      headers: authHeader(token),
+    });
     if (!response.ok) await handleResponseError(response);
     return response.json();
   },
 
   getInterested: async (token, publicationId) => {
     const response = await fetch(`${API_ROOT}/${publicationId}/interest`, {
-        method: "GET",
-        headers: authHeader(token),
-      }
-    );
+      method: "GET",
+      headers: authHeader(token),
+    });
     if (!response.ok) await handleResponseError(response);
     return response.json();
   },
-  
+
+  getBreeds: async (token, type) => {
+    const url = new URL(API_ROOT.replace("/publications", "/breeds"));
+    url.searchParams.append("type", type);
+    const response = await fetch(url.toString(), {
+      method: "GET",
+      headers: authHeader(token),
+    });
+    if (!response.ok) await handleResponseError(response);
+    return response.json();
+  },
+
   listMyPublications: async (token, params = {}) => {
     const url = new URL(`${API_ROOT}/me`);
     Object.keys(params).forEach((k) => url.searchParams.append(k, params[k]));
