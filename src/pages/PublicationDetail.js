@@ -1,6 +1,7 @@
 import React, { useCallback, useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { publicationService } from "../services/PublicationService";
+import Map from "../components/Map";
 
 const PublicationDetail = () => {
   const { id } = useParams();
@@ -109,6 +110,42 @@ const PublicationDetail = () => {
                   <strong>C.P.:</strong> {pub.zipCode}
                 </span>
               </div>
+            </div>
+
+            {pub.breedInfo && (
+              <div className="publication-section breed-info">
+                <h3>Sobre la raza {pub.breedInfo.breedName}</h3>
+                <div className="breed-info__grid">
+                  {pub.breedInfo.temperament && (
+                    <div className="breed-info__item">
+                      <span className="breed-info__label">Temperamento</span>
+                      <span>{pub.breedInfo.temperament}</span>
+                    </div>
+                  )}
+                  {pub.breedInfo.origin && (
+                    <div className="breed-info__item">
+                      <span className="breed-info__label">Origen</span>
+                      <span>{pub.breedInfo.origin}</span>
+                    </div>
+                  )}
+                  {pub.breedInfo.lifeSpan && (
+                    <div className="breed-info__item">
+                      <span className="breed-info__label">Esperanza de vida</span>
+                      <span>{pub.breedInfo.lifeSpan} años</span>
+                    </div>
+                  )}
+                </div>
+                {pub.breedInfo.description && (
+                  <p className="breed-info__description">
+                    {pub.breedInfo.description}
+                  </p>
+                )}
+              </div>
+            )}
+
+            <div className="publication-section">
+              <h3>Ubicación</h3>
+              <Map zipCode={pub.zipCode} petName={pub.petName} />
             </div>
 
             <div className="publication-section">

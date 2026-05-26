@@ -1445,6 +1445,54 @@ select.home-search__input {
   }
 }
 
+.map-container {
+  width: 100%;
+  height: 320px;
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(15, 118, 110, 0.12);
+  overflow: hidden;
+  background: linear-gradient(135deg, #f0fffe 0%, #e6f9f7 100%);
+}
+
+.map-container--loading,
+.map-container--error {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  font: 600 0.95rem "Space Grotesk", "Segoe UI", sans-serif;
+  color: var(--primary-dark);
+}
+
+.map-container--error {
+  color: #dc2626;
+  background: #fee2e2;
+}
+
+/* Leaflet map overrides */
+.map-container .leaflet-container {
+  font-family: "Space Grotesk", "Segoe UI", sans-serif;
+}
+
+.map-container .leaflet-popup-content-wrapper {
+  border-radius: 8px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+.map-container .leaflet-popup-tip {
+  background: white;
+}
+
+.map-container .leaflet-popup-content {
+  margin: 0;
+  font: 600 0.9rem "Space Grotesk", "Segoe UI", sans-serif;
+  color: var(--primary-dark);
+}
+
+.map-container .leaflet-marker-icon {
+  filter: hue-rotate(200deg) brightness(0.95);
+}
+
 @media (max-width: 720px) {
   .home-search {
     flex-direction: column;
@@ -1469,4 +1517,153 @@ select.home-search__input {
     margin-left: 0;
     width: 100%;
   }
+}
+
+/* ===== Mapa: contenedor siempre montado + overlays ===== */
+.map-wrapper {
+  position: relative;
+  width: 100%;
+}
+
+.map-container--overlay {
+  position: absolute;
+  inset: 0;
+  z-index: 500;
+}
+
+/* ===== Sección de información de la raza ===== */
+.breed-info__grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+  gap: 14px;
+  margin-bottom: 14px;
+}
+
+.breed-info__item {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  padding: 12px 14px;
+  background: var(--primary-soft);
+  border-radius: var(--radius-md);
+}
+
+.breed-info__label {
+  font: 600 0.72rem "Space Grotesk", "Segoe UI", sans-serif;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--primary-dark);
+}
+
+.breed-info__description {
+  margin: 0;
+  color: var(--text-muted);
+  line-height: 1.5;
+}
+
+/* ===== Gestor de fotos en edición ===== */
+.photo-manager {
+  margin-top: 24px;
+  border-top: 1px solid var(--border);
+  padding-top: 20px;
+}
+
+.photo-manager__empty {
+  color: var(--text-muted);
+  margin: 8px 0 0;
+}
+
+.photo-manager__grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+  gap: 14px;
+  margin-top: 10px;
+}
+
+.photo-manager__item {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.photo-manager__img {
+  width: 100%;
+  height: 120px;
+  object-fit: cover;
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-sm);
+}
+
+.photo-manager__delete {
+  width: 100%;
+}
+
+/* ===== Toast / notificaciones flotantes ===== */
+.toast {
+  position: fixed;
+  top: 20px;
+  right: 20px;
+  z-index: 1000;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  max-width: 360px;
+  padding: 14px 16px;
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-md);
+  font: 600 0.92rem/1.4 "Source Sans 3", "Segoe UI", sans-serif;
+  animation: toast-in 0.2s ease-out;
+}
+
+@keyframes toast-in {
+  from {
+    opacity: 0;
+    transform: translateY(-8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.toast--success {
+  color: #0f6d60;
+  background: var(--primary-soft);
+  border: 1px solid rgba(15, 118, 110, 0.22);
+}
+
+.toast--error {
+  color: #981b2c;
+  background: var(--danger-soft);
+  border: 1px solid rgba(194, 65, 74, 0.22);
+}
+
+.toast--warning {
+  color: #92600a;
+  background: var(--accent-soft);
+  border: 1px solid rgba(245, 158, 11, 0.28);
+}
+
+.toast--info {
+  color: var(--text-main);
+  background: var(--surface-soft);
+  border: 1px solid var(--border);
+}
+
+.toast__message {
+  flex: 1;
+}
+
+.toast__close {
+  border: none;
+  background: transparent;
+  font-size: 1.2rem;
+  line-height: 1;
+  cursor: pointer;
+  color: inherit;
+  opacity: 0.7;
+}
+
+.toast__close:hover {
+  opacity: 1;
 }

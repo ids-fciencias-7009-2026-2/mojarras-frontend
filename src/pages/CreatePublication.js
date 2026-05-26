@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { publicationService } from "../services/PublicationService";
+import BreedAutocomplete from "../components/BreedAutocomplete";
 
 const CreatePublication = () => {
   const [form, setForm] = useState({
@@ -82,12 +83,10 @@ const CreatePublication = () => {
             <option value="DOG">Perro</option>
             <option value="CAT">Gato</option>
           </select>
-          <input
-            name="breed"
-            placeholder="Raza (opcional)"
+          <BreedAutocomplete
+            type={form.type}
             value={form.breed}
             onChange={handleChange}
-            className="ui-input"
           />
           <input
             name="zipCode"
