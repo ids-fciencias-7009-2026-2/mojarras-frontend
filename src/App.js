@@ -7,7 +7,6 @@ import UpdateProfile from "./pages/UpdateProfile";
 import Home from "./pages/Home";
 import CreatePublication from "./pages/CreatePublication";
 import PublicationDetail from "./pages/PublicationDetail";
-import PublicationComplete from "./pages/PublicationComplete";
 import MyPublications from "./pages/MyPublications";
 import EditPublication from "./pages/EditPublication";
 import VerifyAccount from "./pages/VerifyAccount";
@@ -27,82 +26,32 @@ function PrivateRoute({ children }) {
   );
 }
 
+const protectedRoutes = [
+  { path: "/home", element: <Home /> },
+  { path: "/profile", element: <Profile /> },
+  { path: "/update-profile", element: <UpdateProfile /> },
+  { path: "/publications/new", element: <CreatePublication /> },
+  { path: "/publications/:id", element: <PublicationDetail /> },
+  { path: "/publications/:id/edit", element: <EditPublication /> },
+  { path: "/my-publications", element: <MyPublications /> },
+];
+
 function App() {
   return (
     <BrowserRouter>
       <Routes>
-        {/* Públicas */}
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register />} />
         <Route path="/verify" element={<VerifyAccount />} />
 
-        {/* Protegidas */}
-        <Route
-          path="/home"
-          element={
-            <PrivateRoute>
-              <Home />
-            </PrivateRoute>
-          }
-        />
-        <Route
-          path="/profile"
-          element={
-            <PrivateRoute>
-              <Profile />
-            </PrivateRoute>
-          }
-        />
-        <Route
-          path="/update-profile"
-          element={
-            <PrivateRoute>
-              <UpdateProfile />
-            </PrivateRoute>
-          }
-        />
-        <Route
-          path="/publications/new"
-          element={
-            <PrivateRoute>
-              <CreatePublication />
-            </PrivateRoute>
-          }
-        />
-        <Route
-          path="/publications/:id"
-          element={
-            <PrivateRoute>
-              <PublicationDetail />
-            </PrivateRoute>
-          }
-        />
-        <Route
-          path="/publications/:id/complete"
-          element={
-            <PrivateRoute>
-              <PublicationComplete />
-            </PrivateRoute>
-          }
-        />
-        <Route
-          path="/my-publications"
-          element={
-            <PrivateRoute>
-              <MyPublications />
-            </PrivateRoute>
-          }
-        />
-        <Route
-          path="/publications/:id/edit"
-          element={
-            <PrivateRoute>
-              <EditPublication />
-            </PrivateRoute>
-          }
-        />
+        {protectedRoutes.map(({ path, element }) => (
+          <Route
+            key={path}
+            path={path}
+            element={<PrivateRoute>{element}</PrivateRoute>}
+          />
+        ))}
 
-        {/* Raíz: si hay sesión Home, si no Login */}
         <Route
           path="/"
           element={
@@ -113,7 +62,6 @@ function App() {
             )
           }
         />
-
         <Route path="*" element={<Navigate to="/" replace />} />
       </Routes>
     </BrowserRouter>

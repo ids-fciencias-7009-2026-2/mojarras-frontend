@@ -1,6 +1,6 @@
 import React, { useEffect, useRef, useState } from "react";
 import { Link, useNavigate, useSearchParams } from "react-router-dom";
-import { userService } from "../services/UserService";
+import { usersApi } from "../services/api";
 
 const VerifyAccount = () => {
   const [searchParams] = useSearchParams();
@@ -24,7 +24,7 @@ const VerifyAccount = () => {
 
     const verify = async () => {
       try {
-        await userService.verifyAccount(token);
+        await usersApi.verify(token);
         setStatus("success");
         setMessage("Tu cuenta ha sido verificada correctamente.");
         setTimeout(() => navigate("/login"), 3000);

@@ -1,6 +1,6 @@
 import React, { useEffect, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { userService } from "../services/UserService";
+import { usersApi } from "../services/api";
 import "../assets/Navbar.css";
 
 const Navbar = () => {
@@ -11,18 +11,20 @@ const Navbar = () => {
   const buttonRef = useRef(null);
 
   useEffect(() => {
-    const fetchUser = async () => {
+    let cancelled = false;
+    (async () => {
       const token = sessionStorage.getItem("token");
-      if (token) {
-        try {
-          const data = await userService.getProfile(token);
-          setUser(data);
-        } catch (error) {
-          console.error("Error al cargar usuario en el navbar", error);
-        }
+      if (!token) return;
+      try {
+        const data = await usersApi.me();
+        if (!cancelled) setUser(data);
+      } catch (_error) {
+        /* silent: user may be on auth pages */
       }
+    })();
+    return () => {
+      cancelled = true;
     };
-    fetchUser();
   }, []);
 
   useEffect(() => {

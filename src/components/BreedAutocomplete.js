@@ -1,5 +1,5 @@
 import React, { useEffect, useId, useState } from "react";
-import { publicationService } from "../services/PublicationService";
+import { breedsApi } from "../services/api";
 
 const BreedAutocomplete = ({
   type,
@@ -19,8 +19,7 @@ const BreedAutocomplete = ({
     const loadBreeds = async () => {
       try {
         setLoading(true);
-        const token = sessionStorage.getItem("token");
-        const data = await publicationService.getBreeds(token, type);
+        const data = await breedsApi.list(type);
         if (!cancelled) setBreeds(Array.isArray(data) ? data : []);
       } catch (e) {
         if (!cancelled) setBreeds([]);
