@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { userService } from "../services/UserService";
+import { usersApi } from "../services/api";
 
 const Profile = () => {
   const [user, setUser] = useState(null);
@@ -8,16 +8,18 @@ const Profile = () => {
   const navigate = useNavigate();
 
   useEffect(() => {
-    const loadProfile = async () => {
-      const token = sessionStorage.getItem("token");
+    let cancelled = false;
+    (async () => {
       try {
-        const data = await userService.getProfile(token);
-        setUser(data);
+        const data = await usersApi.me();
+        if (!cancelled) setUser(data);
       } catch (err) {
-        setError(err.message);
+        if (!cancelled) setError(err.message);
       }
+    })();
+    return () => {
+      cancelled = true;
     };
-    loadProfile();
   }, []);
 
   if (error)

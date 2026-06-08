@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { userService } from "../services/UserService";
+import { usersApi } from "../services/api";
 
 const Login = () => {
   const [credentials, setCredentials] = useState({ email: "", password: "" });
@@ -16,13 +16,11 @@ const Login = () => {
     setError("");
 
     try {
-      const response = await userService.login(credentials);
-
+      const response = await usersApi.login(credentials);
       sessionStorage.setItem("token", response.token);
       navigate("/home");
     } catch (err) {
-      setError(err.message); // <-- Esta línea manda el texto a la pantalla
-      console.error(err);
+      setError(err.message);
     }
   };
 
